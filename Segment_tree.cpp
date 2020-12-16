@@ -55,6 +55,20 @@ void construct_tree(lli input[],lli low,lli high,lli pos)
     construct_tree(input,mid+1,high,2*pos+2);
     segment_tree[pos]=min(segment_tree[2*pos+1],segment_tree[2*pos+2]);
 }
+void update(int low,int high,int pos,int up_pos,int v)
+{
+    if(up_pos>high || up_pos<low)
+        return;
+    if(up_pos<=low && up_pos>=high)
+    {
+        segment_tree[pos]+=v;
+        return ;
+    }
+    int mid=(low+high)/2;
+    update(low,mid,2*pos+1,up_pos,v);
+    update(mid+1,high,2*pos+2,up_pos,v);
+    segment_tree[pos]=(segment_tree[2*pos+1]+segment_tree[2*pos+2]);
+}
 lli range_max_query(lli qlow,lli qhigh,lli low,lli high,lli pos)
 {
     if(low>=qlow && high<=qhigh)
@@ -81,12 +95,14 @@ int main ()
         mem(input,0);
         mem(segment_tree,0);
         lli x,y;
+        int up_pos;
+        int value=0;
         for(int i=0; i<n; i++)
             scl(input[i]);
         construct_tree(input,0,n-1,0);
-         // update(0,n-1,0,up_pos,value);
-         for(int i=0;i<(pow(2,ceil(log(n)))*2-1);i++)
-        cout << segment_tree[i] << " ";
+        // update(0,n-1,0,up_pos,value);
+        for(int i=0; i<(pow(2,ceil(log(n)))*2-1); i++)
+            cout << segment_tree[i] << " ";
         cout <<endl;
         for(int i=1; i<=q; i++)
         {
@@ -94,5 +110,6 @@ int main ()
             pf("%lld\n",range_max_query(x-1,y-1,0,n-1,0));
         }
     }
-return 0;
+    return 0;
 }
+
